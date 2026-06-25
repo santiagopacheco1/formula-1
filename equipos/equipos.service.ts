@@ -1,20 +1,20 @@
 import { equipo } from './equipos.entity';
-import { CharacterRepository } from './character.repository.interface';
+import { equipoRepository } from './equipos.repository';
 
-export class CharacterService {
+export class equipoService {
 
-    constructor(private readonly characterRepository: CharacterRepository) {}
+    constructor(private readonly equipoRepository: equipoRepository) {}
 
     async getAllequipos(): Promise<equipo[]> {
-        return await this.characterRepository.getCharacters();
+        return await this.equipoRepository.getequipos();
     }
 
-    async getEquipoById(id: string): Promise<equipo | null> {
+    async getequipoById(id: string): Promise<equipo | null> {
         if (!id || id.trim().length === 0) {
             throw new Error('Equipo ID is required');
         }
 
-        const equipo = await this.characterRepository.getCharacterById(id);
+        const equipo = await this.equipoRepository.getequipoById(id);
 
         if (!equipo) {
             return null;
@@ -26,12 +26,12 @@ export class CharacterService {
     async createequipo(equipoData: Omit<equipo, 'id' | 'create_time'>): Promise<equipo> {
         this.validateEquipoData(equipoData);
 
-        const equipo = await this.characterRepository.createCharacter(equipoData);
+        const equipo = await this.equipoRepository.createequipo(equipoData);
 
         return equipo;
     }
 
-    async updateEquipo(id: string, equipoData: Partial<Omit<equipo, 'id' | 'create_time'>>): Promise<equipo | null> {
+    async updateequipo(id: string, equipoData: Partial<Omit<equipo, 'id' | 'create_time'>>): Promise<equipo | null> {
         if (!id || id.trim().length === 0) {
             throw new Error('Equipo ID is required');
         }
@@ -40,79 +40,78 @@ export class CharacterService {
             throw new Error('No data provided for update');
         }
 
-        if (equipoData.level !== undefined) {
-            this.validateLevel(equipoData.level);
-        }
-
-        if (equipoData.experience_points !== undefined) {
-            this.validateExperiencePoints(equipoData.experience_points);
-        }
-
-        if (equipoData.health_points !== undefined) {
-            this.validateHealthPoints(equipoData.health_points);
-        }
-
-        const equipo = await this.characterRepository.updateCharacter(id, equipoData);
+        const equipo = await this.equipoRepository.updateequipo(id, equipoData);
 
         return equipo;
     }
 
-    async deleteEquipo(id: string): Promise<boolean> {
+    async deleteequipo(id: string): Promise<boolean> {
         if (!id || id.trim().length === 0) {
             throw new Error('Equipo ID is required');
         }
 
-        const deleted = await this.characterRepository.deleteCharacter(id);
+        const deleted = await this.equipoRepository.deleteequipo(id);
 
         return deleted;
     }
 
     private validateEquipoData(data: Omit<equipo, 'id' | 'create_time'>): void {
-        if (!data.name || data.name.trim().length === 0) {
-            throw new Error('Equipo name is required');
+        if (!data.nombre || data.nombre.trim().length === 0) {
+            throw new Error('nombre del equipo is required');
         }
 
-        if (data.name.length > 100) {
-            throw new Error('Equipo name must not exceed 100 characters');
+        if (data.nombre.length > 50) {
+            throw new Error('nombre del equipo must not exceed 50 caracteres');
         }
-
-        this.validateLevel(data.level);
-        this.validateExperiencePoints(data.experience_points);
-        this.validateHealthPoints(data.health_points);
-        this.validateManaPoints(data.mana_points);
-        this.validateStats(data.strength, 'strength');
-        this.validateStats(data.agility, 'agility');
-        this.validateStats(data.intelligence, 'intelligence');
-        this.validateStats(data.defense, 'defense');
+        this.validatejefedeequipo(data.jefedeequipo);
+        this.validatepresidente(data.presidente);
+        this.validatepais(data.pais);
+        this.validatefechadefundacion(data.fechadefundacion);
+        this.validatecampeonatosganados(data.campeonatosganados);
     }
 
-    private validateLevel(level: number): void {
-        if (level < 1 || level > 100) {
-            throw new Error('Equipo level must be between 1 and 100');
+    private validatecampeonatosganados(campeonatosGanados: number): void {
+        if (campeonatosGanados < 0) {
+            throw new Error('campeonatos ganados del equipo cannot be negative');
         }
     }
 
-    private validateExperiencePoints(xp: number): void {
-        if (xp < 0) {
-            throw new Error('Experience points cannot be negative');
+    private validatejefedeequipo(jefedeequipo: string): void {
+        if (!jefedeequipo || jefedeequipo.trim().length === 0) {
+            throw new Error('jefe de equipo is required');
+        }
+        if (jefedeequipo.length > 50) {
+            throw new Error('jefe de equipo must not exceed 50 characters');
         }
     }
 
-    private validateHealthPoints(hp: number): void {
-        if (hp < 1) {
-            throw new Error('Health points must be at least 1');
+    private validatepais(pais: string): void {
+        if (!pais || pais.trim().length === 0) {
+        throw new Error('país del equipo is required');
+        }
+        if (pais.length > 50) {
+        throw new Error('país del equipo must not exceed 50 characters');
         }
     }
 
-    private validateManaPoints(mp: number): void {
-        if (mp < 0) {
-            throw new Error('Mana points cannot be negative');
+    private validatepresidente(presidente: string): void {
+        if (!presidente || presidente.trim().length === 0) {
+            throw new Error('presidente de equipo is required');
+        }
+        if (presidente.length > 50) {
+            throw new Error('presidente de equipo must not exceed 50 characters');
         }
     }
 
-    private validateStats(value: number, statName: string): void {
-        if (value < 1 || value > 100) {
-            throw new Error(`${statName} must be between 1 and 100`);
+    private validatefechadefundacion(fechadefundacion: Date): void {
+        if (!fechadefundacion) {
+            throw new Error('fecha de la fundacion is required');
         }
     }
+
 }
+
+
+
+
+    

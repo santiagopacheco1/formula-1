@@ -1,10 +1,10 @@
-export interface Equipo {
+export interface equipo {
   id: number;
   nombre: string;
-  gefedeequipo: string;
+  jefedeequipo: string;
   presidente: string;
   pais: string;
   fechadefundacion: Date;
-  campeonatosGanados: number;
+  campeonatosganados: number;
   logo: string | null;
 }
