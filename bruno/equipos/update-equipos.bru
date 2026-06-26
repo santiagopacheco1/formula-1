@@ -1,0 +1,22 @@
+meta {
+  name: Update equipo
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3000/api/equipo/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "jefedeequipo": "Andreas Seidl",
+    "presidente": "Markus Duesmann",
+    "campeonatosdepilotosganados": 0,
+    "campeonatosdeconstructoresganados": 0,
+    "campeonatoscorridos": 0,
+    "logo": "logo_audi.png"
+  }
+}

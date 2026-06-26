@@ -1,0 +1,26 @@
+meta {
+  name: Create equipo
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/api/equipo
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Audi",
+    "jefedeequipo": "Andreas Seidl",
+    "presidente": "Markus Duesmann",
+    "pais": "Alemania",
+    "campeonatosdepilotosganados": 0,
+    "campeonatosdeconstructoresganados": 0,
+    "campeonatoscorridos": 0,
+    "fechadefundacion": "2026-01-01",
+    "logo": "logo_audi.png"
+  }
+}
+​

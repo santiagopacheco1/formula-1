@@ -1,4 +1,6 @@
 import express from 'express';
+import fs from 'fs';
+import path from 'path';
 import { Pool } from 'pg';
 import { config } from './config';
 import { EquipoRoutes } from '../equipos/equipos.routes';
@@ -9,21 +11,16 @@ import { EquiposRepositoryPostgres } from '../equipos/equipos.repository.postgre
 export class App {
     public readonly app: express.Express;
     private readonly database: { close: () => Promise<void> };
+    private readonly pool: Pool;
 
     constructor() {
         this.app = express();
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
 
-        const pool = new Pool({
-            user: process.env.POSTGRES_USER ?? 'postgres',
-            host: process.env.POSTGRES_HOST ?? 'localhost',
-            database: process.env.POSTGRES_DB ?? 'equipo_db',
-            password: process.env.POSTGRES_PASSWORD ?? 'postgres',
-            port: Number(process.env.POSTGRES_PORT ?? 5432),
-        });
+        this.pool = new Pool(config.postgres);
 
-        const equipoRepository = new EquiposRepositoryPostgres(pool);
+        const equipoRepository = new EquiposRepositoryPostgres(this.pool);
         const equipoServiceInstance = new equipoService(equipoRepository);
         const equipoControllerInstance = new equipoController(equipoServiceInstance);
         const equipoRoutes = new EquipoRoutes(equipoControllerInstance);
@@ -36,14 +33,29 @@ export class App {
 
         this.database = {
             close: async () => {
-                await pool.end();
+                await this.pool.end();
             },
         };
 
         console.log(`Server configured on port ${config.port}`);
     }
 
-    public start() {
+    private async initializeDatabase(): Promise<void> {
+        const initSqlPath = path.resolve(__dirname, 'db', 'init.SQL');
+        const sql = fs.readFileSync(initSqlPath, 'utf8');
+        const statements = sql
+            .split(/;\s*\n/)
+            .map(statement => statement.trim())
+            .filter(statement => statement.length > 0);
+
+        for (const statement of statements) {
+            await this.pool.query(statement);
+        }
+    }
+
+    public async start() {
+        await this.initializeDatabase();
+
         this.app.listen(config.port, () => {
             console.log(`Server is running on port ${config.port}`);
         });
