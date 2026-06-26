@@ -15,7 +15,7 @@ export class PilotoRepositoryPostgres implements PilotoRepository {
     }
 
     async createPiloto(piloto: Omit<Piloto, 'id' | 'create_time'>): Promise<Piloto> {
-        const query = `INSERT INTO "piloto" (name, nickname, team, nationality, birth_date, driver_number) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+        const query = `INSERT INTO "piloto" (nombre, apellido, escuderia, nacionalidad, fechaNacimiento, campeonatosGanados, victorias, podios, poles, puntos) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`;
         const values = [
             piloto.nombre,
             piloto.apellido,
@@ -33,7 +33,7 @@ export class PilotoRepositoryPostgres implements PilotoRepository {
     }
     
 
-    async getpilotoById(id: string): Promise<Piloto | null> {
+    async getPilotoById(id: string): Promise<Piloto | null> {
         const result = await this.client.query('SELECT * FROM "piloto" WHERE id = $1', [id]);
         if (result.rows.length > 0) {
             return this.toPiloto(result.rows[0]);
@@ -60,7 +60,7 @@ export class PilotoRepositoryPostgres implements PilotoRepository {
         });
 
         if (fields.length === 0) {
-            return this.getpilotoById(id);
+            return this.getPilotoById(id);
         }
 
         values.push(id);

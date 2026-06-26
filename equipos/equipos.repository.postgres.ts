@@ -2,7 +2,7 @@ import { Pool } from "pg";
 import { equipo } from "./equipos.entity";
 import { equipoRepository } from "./equipos.repository.interface";
 
-export class EquoposRepositoryPostgres implements EquoposRepository {
+export class EquiposRepositoryPostgres implements equipoRepository {
 
     private client: Pool;
 
@@ -14,8 +14,8 @@ export class EquoposRepositoryPostgres implements EquoposRepository {
         return { ...row, id: String(row.id) };
     }
 
-    async createEquipo(equipo: Omit<equipo, 'id' | 'create_time'>): Promise<equipo> {
-        const query = `INSERT INTO "equipo" (name, nickname, team, nationality, birth_date, driver_number) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+    async createequipo(equipo: Omit<equipo, 'id' | 'create_time'>): Promise<equipo> {
+        const query = `INSERT INTO "equipo" (nombre, jefedeequipo, presidente, pais, fechadefundacion, campeonatosganados, logo) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
         const values = [
             equipo.nombre,
             equipo.jefedeequipo,
@@ -28,9 +28,8 @@ export class EquoposRepositoryPostgres implements EquoposRepository {
         const result = await this.client.query(query, values);
         return this.toEquipo(result.rows[0]);
     }
-    
 
-    async getEquipoById(id: string): Promise<equipo | null> {
+    async getequipoById(id: string): Promise<equipo | null> {
         const result = await this.client.query('SELECT * FROM "equipo" WHERE id = $1', [id]);
         if (result.rows.length > 0) {
             return this.toEquipo(result.rows[0]);
@@ -38,12 +37,12 @@ export class EquoposRepositoryPostgres implements EquoposRepository {
         return null;
     }
 
-    async getPilotos(): Promise<equipo[]> {
+    async getequipos(): Promise<equipo[]> {
         const result = await this.client.query('SELECT * FROM "equipo"');
         return result.rows.map(row => this.toEquipo(row));
     }
 
-    async updateEquipo(id: string, equipo: Partial<Omit<equipo, 'id' | 'create_time'>>): Promise<equipo | null> {
+    async updateequipo(id: string, equipo: Partial<Omit<equipo, 'id' | 'create_time'>>): Promise<equipo | null> {
         const fields: string[] = [];
         const values: any[] = [];
         let paramCount = 1;
@@ -57,7 +56,7 @@ export class EquoposRepositoryPostgres implements EquoposRepository {
         });
 
         if (fields.length === 0) {
-            return this.getEquipoById(id);
+            return this.getequipoById(id);
         }
 
         values.push(id);
