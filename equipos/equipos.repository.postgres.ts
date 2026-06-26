@@ -15,14 +15,16 @@ export class EquiposRepositoryPostgres implements equipoRepository {
     }
 
     async createequipo(equipo: Omit<equipo, 'id' | 'create_time'>): Promise<equipo> {
-        const query = `INSERT INTO "equipo" (nombre, jefedeequipo, presidente, pais, fechadefundacion, campeonatosganados, logo) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+        const query = `INSERT INTO "equipo" (nombre, jefedeequipo, presidente, pais, fechadefundacion, campeonatosganados, campeonatoscorridos, logo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`;
         const values = [
             equipo.nombre,
             equipo.jefedeequipo,
             equipo.presidente,
             equipo.pais,
             equipo.fechadefundacion,
-            equipo.campeonatosganados,
+            equipo.campeonatosdepilotosganados,
+            equipo.campeonatosdeconstructoresganados,
+            equipo.campeonatoscorridos,
             equipo.logo
         ];
         const result = await this.client.query(query, values);

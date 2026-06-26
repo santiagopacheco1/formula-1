@@ -5,6 +5,8 @@ export interface equipo {
   presidente: string;
   pais: string;
   fechadefundacion: Date;
-  campeonatosganados: number;
+  campeonatosdepilotosganados: number;
+  campeonatosdeconstructoresganados: number;
+  campeonatoscorridos: number;
   logo: string | null;
 }

@@ -67,12 +67,26 @@ export class equipoService {
         this.validatepresidente(data.presidente);
         this.validatepais(data.pais);
         this.validatefechadefundacion(data.fechadefundacion);
-        this.validatecampeonatosganados(data.campeonatosganados);
+        this.validatecampeonatosdepilotosganados(data.campeonatosdepilotosganados);
+        this.validatecampeonatosdeconstructoresganados(data.campeonatosdeconstructoresganados);
+        this.validatecampeonatoscorridos(data.campeonatoscorridos);
     }
 
-    private validatecampeonatosganados(campeonatosGanados: number): void {
+    private validatecampeonatosdepilotosganados(campeonatosGanados: number): void {
         if (campeonatosGanados < 0) {
-            throw new Error('campeonatos ganados del equipo cannot be negative');
+            throw new Error('campeonatos de pilotos ganados del equipo cannot be negative');
+        }
+    }
+
+    private validatecampeonatosdeconstructoresganados(campeonatosGanados: number): void {
+        if (campeonatosGanados < 0) {
+            throw new Error('campeonatos de constructores ganados del equipo cannot be negative');
+        }
+    }
+
+    private validatecampeonatoscorridos(campeonatosCorridos: number): void {
+        if (campeonatosCorridos < 0) {
+            throw new Error('campeonatos corridos del equipo cannot be negative');
         }
     }
 

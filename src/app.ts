@@ -1,35 +1,52 @@
 import express from 'express';
-import { CharacterRoutes } from './character/character.routes';
-import { CharacterService } from './character/character.service';
-import { CharacterController } from './character/character.controller';
+import { Pool } from 'pg';
 import { config } from './config';
-import { createDatabaseProvider, DatabaseProvider } from './db/database.factory';
+import { EquipoRoutes } from '../equipos/equipos.routes';
+import { equipoController } from '../equipos/equipos.controller';
+import { equipoService } from '../equipos/equipos.service';
+import { EquiposRepositoryPostgres } from '../equipos/equipos.repository.postgres';
 
 export class App {
-
-    public readonly app;
-    private readonly database: DatabaseProvider;
+    public readonly app: express.Express;
+    private readonly database: { close: () => Promise<void> };
 
     constructor() {
         this.app = express();
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
 
-        this.database = createDatabaseProvider();
-        console.log(`Database engine: ${config.dbEngine}`);
+        const pool = new Pool({
+            user: process.env.POSTGRES_USER ?? 'postgres',
+            host: process.env.POSTGRES_HOST ?? 'localhost',
+            database: process.env.POSTGRES_DB ?? 'f1_db',
+            password: process.env.POSTGRES_PASSWORD ?? 'postgres',
+            port: Number(process.env.POSTGRES_PORT ?? 5432),
+        });
 
-        const characterService = new CharacterService(this.database.characterRepository);
-        const characterController = new CharacterController(characterService);
-        const characterRoutes = new CharacterRoutes(characterController);
+        const equipoRepository = new EquiposRepositoryPostgres(pool);
+        const equipoServiceInstance = new equipoService(equipoRepository);
+        const equipoControllerInstance = new equipoController(equipoServiceInstance);
+        const equipoRoutes = new EquipoRoutes(equipoControllerInstance);
 
-        this.app.use('/api', characterRoutes.router);
+        this.app.get('/', (_req, res) => {
+            res.json({ message: 'API Formula 1' });
+        });
+
+        this.app.use('/api', equipoRoutes.router);
+
+        this.database = {
+            close: async () => {
+                await pool.end();
+            },
+        };
+
+        console.log(`Server configured on port ${config.port}`);
     }
 
     public start() {
         this.app.listen(config.port, () => {
             console.log(`Server is running on port ${config.port}`);
         });
-        console.log('App started');
     }
 
     public async close() {
