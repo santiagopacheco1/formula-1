@@ -1,5 +1,5 @@
 export interface equipo {
-  id: number;
+  id: string;
   nombre: string;
   jefedeequipo: string;
   presidente: string;

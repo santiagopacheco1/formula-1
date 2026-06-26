@@ -1,5 +1,5 @@
 import { equipo } from './equipos.entity';
-import { equipoRepository } from './equipos.repository';
+import { equipoRepository } from './equipos.repository.interface';
 
 export class equipoService {
 
