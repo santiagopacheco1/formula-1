@@ -7,6 +7,10 @@ import { EquipoRoutes } from '../equipos/equipos.routes';
 import { equipoController } from '../equipos/equipos.controller';
 import { equipoService } from '../equipos/equipos.service';
 import { EquiposRepositoryPostgres } from '../equipos/equipos.repository.postgres';
+import { PilotoRoutes } from '../pilotos/piloto.routes';
+import { PilotoController } from '../pilotos/piloto.controller';
+import { PilotoService } from '../pilotos/piloto.service';
+import { PilotoRepositoryPostgres } from '../pilotos/piloto.repository.postgres';
 
 export class App {
     public readonly app: express.Express;
@@ -25,11 +29,17 @@ export class App {
         const equipoControllerInstance = new equipoController(equipoServiceInstance);
         const equipoRoutes = new EquipoRoutes(equipoControllerInstance);
 
+        const pilotoRepository = new PilotoRepositoryPostgres(this.pool);
+        const pilotoServiceInstance = new PilotoService(pilotoRepository);
+        const pilotoControllerInstance = new PilotoController(pilotoServiceInstance);
+        const pilotoRoutes = new PilotoRoutes(pilotoControllerInstance);
+
         this.app.get('/', (_req, res) => {
             res.json({ message: 'API Formula 1' });
         });
 
         this.app.use('/api', equipoRoutes.router);
+        this.app.use('/api', pilotoRoutes.router);
 
         this.database = {
             close: async () => {
@@ -41,15 +51,20 @@ export class App {
     }
 
     private async initializeDatabase(): Promise<void> {
-        const initSqlPath = path.resolve(__dirname, 'db', 'init.SQL');
-        const sql = fs.readFileSync(initSqlPath, 'utf8');
-        const statements = sql
-            .split(/;\s*\n/)
-            .map(statement => statement.trim())
-            .filter(statement => statement.length > 0);
+        const dbDir = path.resolve(__dirname, 'db');
+        const filesToLoad = ['init.SQL', 'seed-equipos.sql', 'seed-pilotos.sql'];
 
-        for (const statement of statements) {
-            await this.pool.query(statement);
+        for (const fileName of filesToLoad) {
+            const filePath = path.resolve(dbDir, fileName);
+            const sql = fs.readFileSync(filePath, 'utf8');
+            const statements = sql
+                .split(/;\s*\n/)
+                .map(statement => statement.trim())
+                .filter(statement => statement.length > 0);
+
+            for (const statement of statements) {
+                await this.pool.query(statement);
+            }
         }
     }
 

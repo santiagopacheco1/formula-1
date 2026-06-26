@@ -1,0 +1,35 @@
+### Obtener todos los pilotos
+GET http://localhost:3000/api/pilotos
+
+### Obtener un piloto por id
+GET http://localhost:3000/api/piloto/1
+
+### Crear un piloto
+POST http://localhost:3000/api/piloto
+Content-Type: application/json
+
+{
+    "nombre": "Oscar",
+    "apellido": "Piastri",
+    "nacionalidad": "Australiana",
+    "fechaNacimiento": "2001-04-06",
+    "escuderia": "McLaren",
+    "campeonatosGanados": 0,
+    "victorias": 0,
+    "podios": 0,
+    "poles": 0,
+    "puntos": 0
+}
+
+### Actualizar un piloto
+PUT http://localhost:3000/api/piloto/1
+Content-Type: application/json
+
+{
+    "nacionalidad": "Británica",
+    "escuderia": "McLaren",
+    "puntos": 150
+}
+
+### Eliminar un piloto
+DELETE http://localhost:3000/api/piloto/1

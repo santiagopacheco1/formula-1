@@ -13,11 +13,18 @@ CREATE TABLE IF NOT EXISTS "equipo" (
     logo TEXT
 );
 
--- Insert sample data
-INSERT INTO "equipo" (nombre, jefedeequipo, presidente, pais, campeonatosdepilotosganados, campeonatosdeconstructoresganados, campeonatoscorridos, fechadefundacion, logo
-)
-VALUES
-    ('Ferrari', 'Fred Vasseur', 'John Elkann', 'Italia', 15, 16, 1094, '1929-01-01', 'logo_ferrari.png'),
-    ('Mercedes', 'Toto Wolff', 'Toto Wolff', 'Alemania', 9, 8, 311, '1954-01-01', 'logo_mercedes.png'),
-    ('McLaren', 'Andrea Stella', 'Zak Brown', 'Reino Unido', 13, 10, 968, '1963-01-01', 'logo_mclaren.png'),
-    ('Alpine', 'Flavio Briatore', 'Philippe Krief', 'Francia', 0, 0, 84, '2021-01-01', 'logo_alpine.png');
+-- Create piloto table
+CREATE TABLE IF NOT EXISTS "piloto" (
+    id SERIAL PRIMARY KEY,
+    create_time TIMESTAMP NOT NULL DEFAULT NOW(),
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    nacionalidad VARCHAR(100) NOT NULL,
+    fechaNacimiento DATE NOT NULL,
+    escuderia VARCHAR(100) NOT NULL,
+    campeonatosGanados INTEGER NOT NULL DEFAULT 0,
+    victorias INTEGER NOT NULL DEFAULT 0,
+    podios INTEGER NOT NULL DEFAULT 0,
+    poles INTEGER NOT NULL DEFAULT 0,
+    puntos INTEGER NOT NULL DEFAULT 0
+);

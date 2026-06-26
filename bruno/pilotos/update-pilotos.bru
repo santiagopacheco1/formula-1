@@ -1,0 +1,19 @@
+meta {
+  name: Update piloto
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3000/api/piloto/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nacionalidad": "Británica",
+    "escuderia": "McLaren",
+    "puntos": 150
+  }
+}

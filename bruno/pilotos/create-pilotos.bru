@@ -1,0 +1,26 @@
+meta {
+  name: Create piloto
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/api/piloto
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Oscar",
+    "apellido": "Piastri",
+    "nacionalidad": "Australiana",
+    "fechaNacimiento": "2001-04-06",
+    "escuderia": "McLaren",
+    "campeonatosGanados": 0,
+    "victorias": 0,
+    "podios": 0,
+    "poles": 0,
+    "puntos": 0
+  }
+}
