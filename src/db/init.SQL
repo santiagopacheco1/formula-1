@@ -1,3 +1,4 @@
+-- Active: 1782499846976@@127.0.0.1@5432@equipo_db
 -- Create equipo table
 CREATE TABLE IF NOT EXISTS "equipo" (
     id SERIAL PRIMARY KEY,
