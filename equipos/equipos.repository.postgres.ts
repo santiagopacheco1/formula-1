@@ -30,20 +30,20 @@ export class EquoposRepositoryPostgres implements EquoposRepository {
     }
     
 
-    async getpilotoById(id: string): Promise<equipo | null> {
-        const result = await this.client.query('SELECT * FROM "piloto" WHERE id = $1', [id]);
+    async getEquipoById(id: string): Promise<equipo | null> {
+        const result = await this.client.query('SELECT * FROM "equipo" WHERE id = $1', [id]);
         if (result.rows.length > 0) {
             return this.toEquipo(result.rows[0]);
         }
         return null;
     }
 
-    async getPilotos(): Promise<Piloto[]> {
-        const result = await this.client.query('SELECT * FROM "piloto"');
+    async getPilotos(): Promise<equipo[]> {
+        const result = await this.client.query('SELECT * FROM "equipo"');
         return result.rows.map(row => this.toEquipo(row));
     }
 
-    async updatePiloto(id: string, piloto: Partial<Omit<equipo, 'id' | 'create_time'>>): Promise<equipo | null> {
+    async updateEquipo(id: string, equipo: Partial<Omit<equipo, 'id' | 'create_time'>>): Promise<equipo | null> {
         const fields: string[] = [];
         const values: any[] = [];
         let paramCount = 1;
@@ -57,11 +57,11 @@ export class EquoposRepositoryPostgres implements EquoposRepository {
         });
 
         if (fields.length === 0) {
-            return this.getpilotoById(id);
+            return this.getEquipoById(id);
         }
 
         values.push(id);
-        const query = `UPDATE "piloto" SET ${fields.join(', ')} WHERE id = $${paramCount} RETURNING *`;
+        const query = `UPDATE "equipo" SET ${fields.join(', ')} WHERE id = $${paramCount} RETURNING *`;
         const result = await this.client.query(query, values);
 
         if (result.rows.length > 0) {
@@ -70,8 +70,8 @@ export class EquoposRepositoryPostgres implements EquoposRepository {
         return null;
     }
 
-    async deletePiloto(id: string): Promise<boolean> {
-        const result = await this.client.query('DELETE FROM "piloto" WHERE id = $1', [id]);
+    async deleteequipo(id: string): Promise<boolean> {
+        const result = await this.client.query('DELETE FROM "equipo" WHERE id = $1', [id]);
         return result.rowCount !== null && result.rowCount > 0;
     }
 }
